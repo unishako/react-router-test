@@ -1,13 +1,22 @@
-import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import type {Route} from "./+types/home"
+import type {DogJson} from "~/domain/dog";
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
+export async function clientLoader(params: Route.ClientLoaderArgs) {
+    const res = await fetch("https://dog.ceo/api/breeds/image/random");
+    const dogJson: DogJson = await res.json();
+    return dogJson;
 }
 
-export default function Home() {
-  return <Welcome />;
+export default function Home({loaderData}: Route.ComponentProps) {
+    const dog = loaderData;
+    return (
+        <div>
+            <div className="flex sm:ml-64">
+                <h1>犬</h1>
+                <div className="container mx-auto px-4 py-8">
+                    <img src={dog.message} alt="犬"/>
+                </div>
+            </div>
+        </div>
+    );
 }
